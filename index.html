@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Daily Finance Tracker - India</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Daily Finance Tracker</h1>
+            <p class="header-subtitle">Apne transactions ko 30 seconds mein log kariye</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Quick Transaction Entry -->
+            <section class="transaction-entry">
+                <div class="card">
+                    <div class="card__header">
+                        <h2>Add New Transaction</h2>
+                        <p>Quick entry for daily expenses & income</p>
+                    </div>
+                    <div class="card__body">
+                        <form id="transactionForm" class="transaction-form">
+                            <div class="form-row">
+                                <div class="form-group amount-group">
+                                    <label class="form-label" for="amount">Amount (₹)</label>
+                                    <input 
+                                        type="text" 
+                                        id="amount" 
+                                        name="amount"
+                                        class="form-control amount-input" 
+                                        placeholder="0.00"
+                                        autocomplete="off"
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="category">Category</label>
+                                    <select id="category" name="category" class="form-control" required>
+                                        <option value="">Select category...</option>
+                                        <optgroup label="💰 Income">
+                                            <option value="Salary">💰 Salary</option>
+                                            <option value="Freelance Work">💼 Freelance Work</option>
+                                            <option value="Gifts/Bonus">🎁 Gifts/Bonus</option>
+                                            <option value="Investments">📈 Investments</option>
+                                            <option value="Business Income">🏪 Business Income</option>
+                                        </optgroup>
+                                        <optgroup label="💸 Expenses">
+                                            <option value="Chai/Tea & Coffee">🍵 Chai/Tea & Coffee</option>
+                                            <option value="Auto/Rickshaw">🛺 Auto/Rickshaw</option>
+                                            <option value="Street Food">🥘 Street Food (Samosa, Dosa)</option>
+                                            <option value="Metro/Bus Transport">🚌 Metro/Bus Transport</option>
+                                            <option value="Mobile Recharge">📱 Mobile Recharge</option>
+                                            <option value="Domestic Help">🏠 Domestic Help (Maid/Cook)</option>
+                                            <option value="Groceries/Sabzi">🥬 Groceries/Sabzi</option>
+                                            <option value="Medical/Hospital">🏥 Medical/Hospital</option>
+                                            <option value="Petrol/Fuel">⛽ Petrol/Fuel</option>
+                                            <option value="Electricity Bill">⚡ Electricity Bill</option>
+                                            <option value="Internet/WiFi">📶 Internet/WiFi</option>
+                                            <option value="Clothing/Shopping">👕 Clothing/Shopping</option>
+                                            <option value="Entertainment/Movies">🎬 Entertainment/Movies</option>
+                                            <option value="Dining Out">🍽️ Dining Out</option>
+                                            <option value="EMI/Loans">💳 EMI/Loans</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="date">Date</label>
+                                    <input 
+                                        type="date" 
+                                        id="date" 
+                                        name="date"
+                                        class="form-control"
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="description">Description (Optional)</label>
+                                    <input 
+                                        type="text" 
+                                        id="description" 
+                                        name="description"
+                                        class="form-control" 
+                                        placeholder="Brief description..."
+                                        maxlength="100"
+                                        autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Quick Amount Buttons -->
+                            <div class="quick-amounts">
+                                <label class="form-label">Quick amounts:</label>
+                                <div class="quick-buttons">
+                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="25">₹25</button>
+                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="50">₹50</button>
+                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="100">₹100</button>
+                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="500">₹500</button>
+                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="1000">₹1000</button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn--primary btn--lg btn--full-width">
+                                Add Transaction
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Overview -->
+            <section class="dashboard">
+                <div class="dashboard-cards">
+                    <div class="card dashboard-card today-card">
+                        <div class="card__body">
+                            <h3>आज का Overview</h3>
+                            <div class="dashboard-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Income</span>
+                                    <span class="stat-value income" id="todayIncome">₹0.00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Expenses</span>
+                                    <span class="stat-value expense" id="todayExpenses">₹0.00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Net Balance</span>
+                                    <span class="stat-value balance" id="todayBalance">₹0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card dashboard-card monthly-card">
+                        <div class="card__body">
+                            <h3>इस महीने</h3>
+                            <div class="dashboard-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Income</span>
+                                    <span class="stat-value income" id="monthlyIncome">₹0.00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Expenses</span>
+                                    <span class="stat-value expense" id="monthlyExpenses">₹0.00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Savings</span>
+                                    <span class="stat-value balance" id="monthlySavings">₹0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card dashboard-card annual-card">
+                        <div class="card__body">
+                            <h3>इस साल</h3>
+                            <div class="dashboard-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Income</span>
+                                    <span class="stat-value income" id="annualIncome">₹0.00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Expenses</span>
+                                    <span class="stat-value expense" id="annualExpenses">₹0.00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Savings Rate</span>
+                                    <span class="stat-value" id="savingsRate">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Transactions -->
+            <section class="transactions-section">
+                <div class="card">
+                    <div class="card__header">
+                        <h3>हाल की Transactions</h3>
+                        <span class="transaction-count" id="transactionCount">0 transactions</span>
+                    </div>
+                    <div class="card__body">
+                        <div class="transactions-list" id="transactionsList">
+                            <div class="empty-state" id="emptyState">
+                                <div class="empty-icon">📊</div>
+                                <h4>No transactions yet</h4>
+                                <p>Start logging your daily transactions above</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-card">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Monthly Expense Breakdown</h3>
+                            <div class="chart-container" style="position: relative; height: 300px;">
+                                <canvas id="expenseChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Income vs Expenses</h3>
+                            <div class="chart-container" style="position: relative; height: 300px;">
+                                <canvas id="incomeExpenseChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card full-width">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Daily Balance Trend (Last 30 Days)</h3>
+                            <div class="chart-container" style="position: relative; height: 300px;">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Financial Insights -->
+            <section class="insights-section">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Financial Insights</h3>
+                        <div class="insights-grid" id="insightsGrid">
+                            <div class="insight-item">
+                                <span class="insight-label">Average Daily Spending</span>
+                                <span class="insight-value" id="avgDailySpending">₹0.00</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="insight-label">Top Expense Category</span>
+                                <span class="insight-value" id="topCategory">-</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="insight-label">Days Until Month End</span>
+                                <span class="insight-value" id="daysRemaining">-</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="insight-label">Transactions This Month</span>
+                                <span class="insight-value" id="monthlyTransactions">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal hidden" id="deleteModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h3>Delete Transaction</h3>
+            <p>Are you sure you want to delete this transaction? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn--outline" id="cancelDelete">Cancel</button>
+                <button type="button" class="btn btn--primary" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+<footer>
+      <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <p>© 2025 Sanskar Pareta™ - Daily Finance Tracker - India Edition</p>
+  <p>All Rights Reserved. Unauthorized reproduction prohibited.</p>
+</footer>
+
+</html>
