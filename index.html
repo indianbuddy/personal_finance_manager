@@ -3,286 +3,841 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Daily Finance Tracker - India</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Daily Finance Tracker - India Edition (Dark)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .app-title {
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1rem;
+        }
+        
+        .form-card, .stat-card, .transactions-list, .analysis-card {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(20, 20, 20, 0.8);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+        
+        .form-control option {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .radio-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4a90e2;
+        }
+        
+        .radio-item label {
+            font-weight: 500;
+            cursor: pointer;
+            color: #ffffff;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4a90e2, #2ecc71, #f39c12);
+        }
+        
+        .stat-title {
+            color: #a0a0a0;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+        
+        .transactions-list h2, .analysis-card h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-details h4 {
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        
+        .transaction-details p {
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .credit {
+            color: #2ecc71;
+        }
+        
+        .debit {
+            color: #e74c3c;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+        
+        /* Analysis Section Styles */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .analysis-item {
+            background: rgba(20, 20, 20, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .analysis-item h3 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .analysis-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+        
+        .analysis-stat:last-child {
+            margin-bottom: 0;
+        }
+        
+        .stat-label {
+            color: #a0a0a0;
+        }
+        
+        .stat-value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .category-breakdown {
+            margin-top: 15px;
+        }
+        
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .category-item:last-child {
+            border-bottom: none;
+        }
+        
+        .category-bar {
+            width: 100px;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        
+        .category-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a90e2, #2ecc71);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .insight-box {
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .insight-box h4 {
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+        
+        .insight-box p {
+            color: #ffffff;
+            line-height: 1.5;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(20, 20, 20, 0.8);
+            margin-top: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        footer p {
+            color: #a0a0a0;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>💰 Daily Finance Tracker</h1>
-            <p class="header-subtitle">Apne transactions ko 30 seconds mein log kariye</p>
+            <h1 class="app-title"> Sanskari Hisab</h1>
+            <p class="subtitle">Apne transactions ko 30 seconds mein log kariye - Dark Mode</p>
         </header>
 
-        <main class="main-content">
-            <!-- Quick Transaction Entry -->
-            <section class="transaction-entry">
-                <div class="card">
-                    <div class="card__header">
-                        <h2>Add New Transaction</h2>
-                        <p>Quick entry for daily expenses & income</p>
-                    </div>
-                    <div class="card__body">
-                        <form id="transactionForm" class="transaction-form">
-                            <div class="form-row">
-                                <div class="form-group amount-group">
-                                    <label class="form-label" for="amount">Amount (₹)</label>
-                                    <input 
-                                        type="text" 
-                                        id="amount" 
-                                        name="amount"
-                                        class="form-control amount-input" 
-                                        placeholder="0.00"
-                                        autocomplete="off"
-                                        required
-                                    >
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="category">Category</label>
-                                    <select id="category" name="category" class="form-control" required>
-                                        <option value="">Select category...</option>
-                                        <optgroup label="💰 Income">
-                                            <option value="Salary">💰 Salary</option>
-                                            <option value="Freelance Work">💼 Freelance Work</option>
-                                            <option value="Gifts/Bonus">🎁 Gifts/Bonus</option>
-                                            <option value="Investments">📈 Investments</option>
-                                            <option value="Business Income">🏪 Business Income</option>
-                                        </optgroup>
-                                        <optgroup label="💸 Expenses">
-                                            <option value="Chai/Tea & Coffee">🍵 Chai/Tea & Coffee</option>
-                                            <option value="Auto/Rickshaw">🛺 Auto/Rickshaw</option>
-                                            <option value="Street Food">🥘 Street Food (Samosa, Dosa)</option>
-                                            <option value="Metro/Bus Transport">🚌 Metro/Bus Transport</option>
-                                            <option value="Mobile Recharge">📱 Mobile Recharge</option>
-                                            <option value="Domestic Help">🏠 Domestic Help (Maid/Cook)</option>
-                                            <option value="Groceries/Sabzi">🥬 Groceries/Sabzi</option>
-                                            <option value="Medical/Hospital">🏥 Medical/Hospital</option>
-                                            <option value="Petrol/Fuel">⛽ Petrol/Fuel</option>
-                                            <option value="Electricity Bill">⚡ Electricity Bill</option>
-                                            <option value="Internet/WiFi">📶 Internet/WiFi</option>
-                                            <option value="Clothing/Shopping">👕 Clothing/Shopping</option>
-                                            <option value="Entertainment/Movies">🎬 Entertainment/Movies</option>
-                                            <option value="Dining Out">🍽️ Dining Out</option>
-                                            <option value="EMI/Loans">💳 EMI/Loans</option>
-                                        </optgroup>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label" for="date">Date</label>
-                                    <input 
-                                        type="date" 
-                                        id="date" 
-                                        name="date"
-                                        class="form-control"
-                                        required
-                                    >
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="description">Description (Optional)</label>
-                                    <input 
-                                        type="text" 
-                                        id="description" 
-                                        name="description"
-                                        class="form-control" 
-                                        placeholder="Brief description..."
-                                        maxlength="100"
-                                        autocomplete="off"
-                                    >
-                                </div>
-                            </div>
+        <div class="success-message" id="successMessage">
+            ✅ Transaction added successfully!
+        </div>
 
-                            <!-- Quick Amount Buttons -->
-                            <div class="quick-amounts">
-                                <label class="form-label">Quick amounts:</label>
-                                <div class="quick-buttons">
-                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="25">₹25</button>
-                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="50">₹50</button>
-                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="100">₹100</button>
-                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="500">₹500</button>
-                                    <button type="button" class="btn btn--sm btn--outline quick-btn" data-amount="1000">₹1000</button>
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn--primary btn--lg btn--full-width">
-                                Add Transaction
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Dashboard Overview -->
-            <section class="dashboard">
-                <div class="dashboard-cards">
-                    <div class="card dashboard-card today-card">
-                        <div class="card__body">
-                            <h3>आज का Overview</h3>
-                            <div class="dashboard-stats">
-                                <div class="stat-item">
-                                    <span class="stat-label">Income</span>
-                                    <span class="stat-value income" id="todayIncome">₹0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Expenses</span>
-                                    <span class="stat-value expense" id="todayExpenses">₹0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Net Balance</span>
-                                    <span class="stat-value balance" id="todayBalance">₹0.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card dashboard-card monthly-card">
-                        <div class="card__body">
-                            <h3>इस महीने</h3>
-                            <div class="dashboard-stats">
-                                <div class="stat-item">
-                                    <span class="stat-label">Income</span>
-                                    <span class="stat-value income" id="monthlyIncome">₹0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Expenses</span>
-                                    <span class="stat-value expense" id="monthlyExpenses">₹0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Savings</span>
-                                    <span class="stat-value balance" id="monthlySavings">₹0.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card dashboard-card annual-card">
-                        <div class="card__body">
-                            <h3>इस साल</h3>
-                            <div class="dashboard-stats">
-                                <div class="stat-item">
-                                    <span class="stat-label">Income</span>
-                                    <span class="stat-value income" id="annualIncome">₹0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Expenses</span>
-                                    <span class="stat-value expense" id="annualExpenses">₹0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Savings Rate</span>
-                                    <span class="stat-value" id="savingsRate">0%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Recent Transactions -->
-            <section class="transactions-section">
-                <div class="card">
-                    <div class="card__header">
-                        <h3>हाल की Transactions</h3>
-                        <span class="transaction-count" id="transactionCount">0 transactions</span>
-                    </div>
-                    <div class="card__body">
-                        <div class="transactions-list" id="transactionsList">
-                            <div class="empty-state" id="emptyState">
-                                <div class="empty-icon">📊</div>
-                                <h4>No transactions yet</h4>
-                                <p>Start logging your daily transactions above</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Charts Section -->
-            <section class="charts-section">
-                <div class="chart-card">
-                    <div class="card">
-                        <div class="card__body">
-                            <h3>Monthly Expense Breakdown</h3>
-                            <div class="chart-container" style="position: relative; height: 300px;">
-                                <canvas id="expenseChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Add Transaction Form -->
+        <div class="form-card">
+            <h2>💰 Add Transaction</h2>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label class="form-label" for="amount">Amount (₹) *</label>
+                    <input type="number" id="amount" class="form-control" placeholder="Enter amount" step="0.01" min="0.01">
+                    <div class="error-message" id="amountError">Please enter a valid amount</div>
                 </div>
 
-                <div class="chart-card">
-                    <div class="card">
-                        <div class="card__body">
-                            <h3>Income vs Expenses</h3>
-                            <div class="chart-container" style="position: relative; height: 300px;">
-                                <canvas id="incomeExpenseChart"></canvas>
-                            </div>
+                <div class="form-group">
+                    <label class="form-label">Transaction Type *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="credit" name="type" value="credit">
+                            <label for="credit">💚 Credit (Income)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="debit" name="type" value="debit">
+                            <label for="debit">❤️ Debit (Expense)</label>
                         </div>
                     </div>
+                    <div class="error-message" id="typeError">Please select transaction type</div>
                 </div>
 
-                <div class="chart-card full-width">
-                    <div class="card">
-                        <div class="card__body">
-                            <h3>Daily Balance Trend (Last 30 Days)</h3>
-                            <div class="chart-container" style="position: relative; height: 300px;">
-                                <canvas id="trendChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label class="form-label" for="category">Category *</label>
+                    <select id="category" class="form-control">
+                        <option value="">Select Category</option>
+                    </select>
+                    <div class="error-message" id="categoryError">Please select a category</div>
                 </div>
-            </section>
 
-            <!-- Financial Insights -->
-            <section class="insights-section">
-                <div class="card">
-                    <div class="card__body">
-                        <h3>Financial Insights</h3>
-                        <div class="insights-grid" id="insightsGrid">
-                            <div class="insight-item">
-                                <span class="insight-label">Average Daily Spending</span>
-                                <span class="insight-value" id="avgDailySpending">₹0.00</span>
-                            </div>
-                            <div class="insight-item">
-                                <span class="insight-label">Top Expense Category</span>
-                                <span class="insight-value" id="topCategory">-</span>
-                            </div>
-                            <div class="insight-item">
-                                <span class="insight-label">Days Until Month End</span>
-                                <span class="insight-value" id="daysRemaining">-</span>
-                            </div>
-                            <div class="insight-item">
-                                <span class="insight-label">Transactions This Month</span>
-                                <span class="insight-value" id="monthlyTransactions">0</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <input type="text" id="description" class="form-control" placeholder="Optional description">
                 </div>
-            </section>
-        </main>
-    </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal hidden" id="deleteModal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <h3>Delete Transaction</h3>
-            <p>Are you sure you want to delete this transaction? This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button type="button" class="btn btn--outline" id="cancelDelete">Cancel</button>
-                <button type="button" class="btn btn--primary" id="confirmDelete">Delete</button>
+                <div class="form-group">
+                    <label class="form-label" for="date">Date *</label>
+                    <input type="date" id="date" class="form-control">
+                    <div class="error-message" id="dateError">Please select a date</div>
+                </div>
+
+                <button type="submit" class="submit-btn">➕ Add Transaction</button>
+            </form>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">📈 Today's Income</div>
+                <div class="stat-amount credit" id="todayIncome">₹0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">📊 Today's Expenses</div>
+                <div class="stat-amount debit" id="todayExpenses">₹0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">💳 Today's Balance</div>
+                <div class="stat-amount" id="todayBalance">₹0</div>
             </div>
         </div>
+
+        <!-- Analysis Section -->
+        <div class="analysis-card">
+            <h2>📊 Financial Analysis</h2>
+            <div class="analysis-grid">
+                <!-- Monthly Summary -->
+                <div class="analysis-item">
+                    <h3>📅 This Month</h3>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Total Income:</span>
+                        <span class="stat-value credit" id="monthlyIncome">₹0</span>
+                    </div>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Total Expenses:</span>
+                        <span class="stat-value debit" id="monthlyExpenses">₹0</span>
+                    </div>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Monthly Balance:</span>
+                        <span class="stat-value" id="monthlyBalance">₹0</span>
+                    </div>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Savings Rate:</span>
+                        <span class="stat-value" id="savingsRate">0%</span>
+                    </div>
+                </div>
+
+                <!-- Annual Projections -->
+                <div class="analysis-item">
+                    <h3>📈 Annual Projection</h3>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Projected Income:</span>
+                        <span class="stat-value credit" id="annualIncome">₹0</span>
+                    </div>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Projected Expenses:</span>
+                        <span class="stat-value debit" id="annualExpenses">₹0</span>
+                    </div>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Projected Savings:</span>
+                        <span class="stat-value" id="annualSavings">₹0</span>
+                    </div>
+                    <div class="analysis-stat">
+                        <span class="stat-label">Daily Average:</span>
+                        <span class="stat-value" id="dailyAverage">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Top Categories -->
+                <div class="analysis-item">
+                    <h3>🏆 Top Expense Categories</h3>
+                    <div id="topCategories">
+                        <p style="color: #a0a0a0; text-align: center;">No data available</p>
+                    </div>
+                </div>
+
+                <!-- Spending Insights -->
+                <div class="analysis-item">
+                    <h3>💡 Smart Insights</h3>
+                    <div id="smartInsights">
+                        <p style="color: #a0a0a0; text-align: center;">Add more transactions to get insights</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Health Insight Box -->
+            <div class="insight-box">
+                <h4>💰 Financial Health Status</h4>
+                <p id="healthStatus">Start tracking your transactions to get personalized financial insights!</p>
+            </div>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="transactions-list">
+            <h2>📝 Recent Transactions</h2>
+            <div id="transactionsList">
+                <p style="text-align: center; color: #a0a0a0;">No transactions yet. Add your first transaction above! 🚀</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 Sanskar Pareta™ - Daily Finance Tracker - India Edition</p>
+            <p>All Rights Reserved. Unauthorized reproduction prohibited.</p>
+        </footer>
     </div>
 
-    <script src="app.js"></script>
-</body>
-<footer>
-      <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <p>© 2025 Sanskar Pareta™ - Daily Finance Tracker - India Edition</p>
-  <p>All Rights Reserved. Unauthorized reproduction prohibited.</p>
-</footer>
+    <script>
+        // Initialize categories
+        const categories = {
+            credit: [
+                'Salary',
+                'Freelance Work',
+                'Business Income',
+                'Gifts/Bonus',
+                'Investments Return',
+                'Other Income'
+            ],
+            debit: [
+                'Chai/Tea & Coffee',
+                'Auto/Rickshaw',
+                'Street Food',
+                'Metro/Bus Transport',
+                'Mobile Recharge',
+                'Domestic Help',
+                'Groceries/Sabzi',
+                'Medical/Hospital',
+                'Petrol/Fuel',
+                'Electricity Bill',
+                'Internet/WiFi',
+                'Clothing/Shopping',
+                'Entertainment/Movies',
+                'Dining Out',
+                'EMI/Loans',
+                'Rent',
+                'Other Expense'
+            ]
+        };
 
+        let transactions = [];
+
+        // Set today's date
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Update categories when type changes
+        document.querySelectorAll('input[name="type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                updateCategories(this.value);
+            });
+        });
+
+        function updateCategories(type) {
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = '<option value="">Select Category</option>';
+            
+            if (type && categories[type]) {
+                categories[type].forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categorySelect.appendChild(option);
+                });
+            }
+        }
+
+        // Form validation and submission
+        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Reset all error messages
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.style.display = 'none';
+            });
+
+            let isValid = true;
+
+            // Validate amount
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (!amount || amount <= 0) {
+                document.getElementById('amountError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate type
+            const type = document.querySelector('input[name="type"]:checked');
+            if (!type) {
+                document.getElementById('typeError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate category
+            const category = document.getElementById('category').value;
+            if (!category) {
+                document.getElementById('categoryError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Validate date
+            const date = document.getElementById('date').value;
+            if (!date) {
+                document.getElementById('dateError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Add transaction
+                const transaction = {
+                    id: Date.now(),
+                    amount: amount,
+                    type: type.value,
+                    category: category,
+                    description: document.getElementById('description').value,
+                    date: date
+                };
+
+                transactions.push(transaction);
+                displayTransactions();
+                updateStats();
+                updateAnalysis();
+                
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 3000);
+
+                // Reset form
+                this.reset();
+                document.getElementById('date').valueAsDate = new Date();
+                document.getElementById('category').innerHTML = '<option value="">Select Category</option>';
+            }
+        });
+
+        function displayTransactions() {
+            const list = document.getElementById('transactionsList');
+            
+            if (transactions.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #a0a0a0;">No transactions yet. Add your first transaction above! 🚀</p>';
+                return;
+            }
+
+            list.innerHTML = transactions.slice(-10).reverse().map(transaction => `
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <h4>${transaction.category}</h4>
+                        <p>${transaction.date} ${transaction.description ? '• ' + transaction.description : ''}</p>
+                    </div>
+                    <div>
+                        <span class="transaction-amount ${transaction.type}">
+                            ${transaction.type === 'credit' ? '+' : '-'}₹${transaction.amount.toFixed(2)}
+                        </span>
+                        <button class="delete-btn" onclick="deleteTransaction(${transaction.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            displayTransactions();
+            updateStats();
+            updateAnalysis();
+        }
+
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTransactions = transactions.filter(t => t.date === today);
+            
+            const todayIncome = todayTransactions
+                .filter(t => t.type === 'credit')
+                .reduce((sum, t) => sum + t.amount, 0);
+                
+            const todayExpenses = todayTransactions
+                .filter(t => t.type === 'debit')
+                .reduce((sum, t) => sum + t.amount, 0);
+                
+            const todayBalance = todayIncome - todayExpenses;
+
+            document.getElementById('todayIncome').textContent = `₹${todayIncome.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('todayExpenses').textContent = `₹${todayExpenses.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('todayBalance').textContent = `₹${todayBalance.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('todayBalance').className = `stat-amount ${todayBalance >= 0 ? 'credit' : 'debit'}`;
+        }
+
+        function updateAnalysis() {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            // Filter transactions for current month
+            const monthlyTransactions = transactions.filter(t => {
+                const transDate = new Date(t.date);
+                return transDate.getMonth() === currentMonth && transDate.getFullYear() === currentYear;
+            });
+            
+            const monthlyIncome = monthlyTransactions
+                .filter(t => t.type === 'credit')
+                .reduce((sum, t) => sum + t.amount, 0);
+                
+            const monthlyExpenses = monthlyTransactions
+                .filter(t => t.type === 'debit')
+                .reduce((sum, t) => sum + t.amount, 0);
+                
+            const monthlyBalance = monthlyIncome - monthlyExpenses;
+            const savingsRate = monthlyIncome > 0 ? ((monthlyBalance / monthlyIncome) * 100).toFixed(1) : 0;
+            
+            // Update monthly stats
+            document.getElementById('monthlyIncome').textContent = `₹${monthlyIncome.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('monthlyExpenses').textContent = `₹${monthlyExpenses.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('monthlyBalance').textContent = `₹${monthlyBalance.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('monthlyBalance').className = `stat-value ${monthlyBalance >= 0 ? 'credit' : 'debit'}`;
+            document.getElementById('savingsRate').textContent = `${savingsRate}%`;
+            document.getElementById('savingsRate').className = `stat-value ${savingsRate >= 20 ? 'credit' : savingsRate >= 10 ? '' : 'debit'}`;
+            
+            // Annual projections
+            const annualIncome = monthlyIncome * 12;
+            const annualExpenses = monthlyExpenses * 12;
+            const annualSavings = annualIncome - annualExpenses;
+            const dailyAverage = monthlyExpenses / new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            document.getElementById('annualIncome').textContent = `₹${annualIncome.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+            document.getElementById('annualExpenses').textContent = `₹${annualExpenses.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+            document.getElementById('annualSavings').textContent = `₹${annualSavings.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+            document.getElementById('annualSavings').className = `stat-value ${annualSavings >= 0 ? 'credit' : 'debit'}`;
+            document.getElementById('dailyAverage').textContent = `₹${dailyAverage.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            
+            // Top categories
+            updateTopCategories(monthlyTransactions);
+            
+            // Smart insights
+            updateSmartInsights(monthlyIncome, monthlyExpenses, savingsRate, dailyAverage);
+        }
+
+        function updateTopCategories(monthlyTransactions) {
+            const expenseTransactions = monthlyTransactions.filter(t => t.type === 'debit');
+            const categoryTotals = {};
+            
+            expenseTransactions.forEach(t => {
+                categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+            });
+            
+            const sortedCategories = Object.entries(categoryTotals)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            const topCategoriesDiv = document.getElementById('topCategories');
+            
+            if (sortedCategories.length === 0) {
+                topCategoriesDiv.innerHTML = '<p style="color: #a0a0a0; text-align: center;">No expense data available</p>';
+                return;
+            }
+            
+            const maxAmount = sortedCategories[0][1];
+            
+            topCategoriesDiv.innerHTML = sortedCategories.map(([category, amount]) => {
+                const percentage = ((amount / maxAmount) * 100);
+                return `
+                    <div class="category-item">
+                        <span style="color: #ffffff;">${category}</span>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <span style="color: #e74c3c;">₹${amount.toLocaleString('en-IN', {maximumFractionDigits: 0})}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateSmartInsights(monthlyIncome, monthlyExpenses, savingsRate, dailyAverage) {
+            const insights = [];
+            
+            if (savingsRate >= 30) {
+                insights.push("🎉 Excellent! You're saving over 30% of your income.");
+            } else if (savingsRate >= 20) {
+                insights.push("👍 Good job! You're maintaining a healthy 20%+ savings rate.");
+            } else if (savingsRate >= 10) {
+                insights.push("⚠️ Consider increasing your savings rate above 20%.");
+            } else if (savingsRate < 0) {
+                insights.push("🚨 Warning: You're spending more than you earn this month.");
+            }
+            
+            if (dailyAverage > 1000) {
+                insights.push(`💸 Your daily average spending is ₹${dailyAverage.toFixed(0)}. Consider tracking smaller expenses.`);
+            }
+            
+            if (monthlyIncome === 0) {
+                insights.push("📈 Add your income transactions to get better insights.");
+            }
+            
+            if (insights.length === 0) {
+                insights.push("🌟 Keep tracking your expenses to get personalized insights!");
+            }
+            
+            document.getElementById('smartInsights').innerHTML = insights.map(insight => 
+                `<p style="margin-bottom: 10px; color: #ffffff;">${insight}</p>`
+            ).join('');
+            
+            // Update health status
+            let healthStatus = '';
+            if (savingsRate >= 20) {
+                healthStatus = `🟢 Excellent financial health! You're saving ${savingsRate}% of your income. Keep it up!`;
+            } else if (savingsRate >= 10) {
+                healthStatus = `🟡 Good financial health. Try to increase your savings rate to 20% for better financial security.`;
+            } else if (savingsRate >= 0) {
+                healthStatus = `🟠 Fair financial health. Focus on reducing expenses and increasing your savings rate.`;
+            } else {
+                healthStatus = `🔴 Poor financial health. You're spending more than you earn. Create a budget to control expenses.`;
+            }
+            
+            document.getElementById('healthStatus').textContent = healthStatus;
+        }
+
+        // Initialize display
+        displayTransactions();
+        updateStats();
+        updateAnalysis();
+    </script>
+</body>
 </html>
